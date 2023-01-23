@@ -1,0 +1,24 @@
+[submodule "userspace-rcu"]
+	path = userspace-rcu
+	url = git://git.lttng.org/userspace-rcu.git
+[submodule "uthash"]
+	path = uthash
+	url = git@github.com:troydhanson/uthash.git
+[submodule "libcsv"]
+	path = libcsv
+	url = git@github.com:rgamble/libcsv.git
+[submodule "toy-queue"]
+	path = toy-queue
+	url = git@github.com:tmick0/toy-queue.git
+[submodule "jansson"]
+	path = jansson
+	url = git@github.com:akheron/jansson.git
+[submodule "libmnl"]
+	path = libmnl
+	url = git://git.netfilter.org/libmnl
+[submodule "libv6"]
+	path = libv6
+	url = git@github.com:dtaht/libv6.git
+[submodule "linenoise"]
+	path = linenoise
+	url = git@github.com:antirez/linenoise.git
