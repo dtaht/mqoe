@@ -2,6 +2,7 @@
 #include <csv.h>
 
 // enum ShapedFields(circuit_id);
+#define SHAPED_FIELDS 13
 
 struct ShapedDevices {
        char *circuit_id;
@@ -24,7 +25,7 @@ static size_t count;
 static struct counts {
   long unsigned fields;
   long unsigned rows;
-  char **ptrs[12];
+  char **ptrs[SHAPED_FIELDS];
 };
 
 /* void cb1 (void *s, size_t i, void *outfile) {
@@ -39,24 +40,38 @@ void cb2 (int c, void *outfile) {
 
 void cb1 (void *s, size_t len, void *data) {
     struct counts *c = ((struct counts *)data);
-    u8 buf[len + 1];
+    u8 buf[len];
     strncpy(buf,s,len);
-    buf[len+1] = 0;
+    if(buf[0] == '#') {
+        return;
+    }
+    if(c->rows == 1) return; // throw away first line
+
+    buf[len] = 0;
     switch(c->fields) {
         case 0:
             c->ptrs[c->fields] = calloc(len + 1,1);
+            printf("%s ",buf);
             break;
+        case 1:
+            printf("%s ",buf);
+            break;
+        case 8:
+        case 9:
+        case 10:
+        case 11:
+            printf("%sMbit ",buf);
+            break;
+        case 12: printf("%s\n", buf);
     }
-// this writes a csv - I want the data
-// csv_write(ptrs->f[field], i, s, i);
-    if(c->fields++ == 12) {
-        c->fields = 0;
-    }
+    ++c->fields;
 }
 
 void cb2 (int c, void *data) {
-    ((struct counts *)data)->rows++;
-    struct shaper *s = (struct shaper *) data;
+    struct counts *s = ((struct counts *)data);
+    s->rows++;
+    s->fields = 0;
+//    struct shaper *s = (struct shaper *) data;
 /*    strcpy(shaper->circuit_id,s[c++]);
     strcpy(shaped->circuit_name,s[c++]);
     strcpy(shaped->device_id,s[c++]);
@@ -70,7 +85,7 @@ void cb2 (int c, void *data) {
     u32 download_min2;
     u32 download_max2;
     char shaped->*comment; */
-    count++;
+//    count++;
 }
 
 int main(int argc, char *argv[]){
@@ -80,7 +95,7 @@ int main(int argc, char *argv[]){
     void *buf;
     struct stat statbuf;
     struct csv_parser p;
-    struct counts c = {0, 0};
+    struct counts c = {};
     size_t bytes_read;
 
     if (argc < 2) errExit1("Invalid path to csv file\n");
