@@ -22,3 +22,9 @@
 [submodule "linenoise"]
 	path = linenoise
 	url = git@github.com:antirez/linenoise.git
+[submodule "poptrie"]
+	path = poptrie
+	url = git@github.com:pixos/poptrie.git
+[submodule "tomlc99"]
+	path = tomlc99
+	url = git@github.com:cktan/tomlc99.git
