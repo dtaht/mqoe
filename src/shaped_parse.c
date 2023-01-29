@@ -122,7 +122,7 @@ int main(int argc, char *argv[]){
     size_t bytes_read;
 
     if (argc < 2) errExit1("Invalid path to csv file\n");
-    if ((fd = open(filepath, O_RDONLY)) < 0) errExit("%s Ccould not open\n",filepath);
+    if ((fd = open(filepath, O_RDONLY)) < 0) errExit("%s Could not open\n",filepath);
     if ((fstat(fd, &statbuf)) < 0) errExit("%s could not stat\n",filepath);
     if ((ptr = mmap(NULL,statbuf.st_size,PROT_READ,MAP_SHARED,fd,0)) == MAP_FAILED) errExit1("CSV file Mapping Failed\n");
     close(fd);
