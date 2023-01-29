@@ -2,6 +2,7 @@ PREFIX = /usr/local
 MANDIR = $(PREFIX)/share/man
 CDEBUGFLAGS = -Os -g -Wall
 DEFINES = $(PLATFORM_DEFINES)
+INCLUDES = ../include/
 CFLAGS = $(CDEBUGFLAGS) $(DEFINES) $(EXTRA_DEFINES)
 LDLIBS = -lrt
 LIBS=-I/usr/local/include -lcgic
@@ -39,7 +40,7 @@ etags:
 	find . -type f \( -name \*.c -o -name \*.h \) | xargs etags --append
 
 include/version.h: $(SRCS)
-	./generate-version.sh > include/version.h
+	./generate-version.sh > $(INCLUDES)/version.h
 
 .SUFFIXES: .man .html
 
