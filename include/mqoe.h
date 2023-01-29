@@ -13,10 +13,10 @@
 #include <linux/tcp_metrics.h>
 #include <linux/types.h>
 #include <stdbool.h>
-
+#include "include/mqoe_version.h"
 
 #define CLOCKID CLOCK_REALTIME
-#define errExit(msg,data)         do     {      printf(msg,data); \
+#define errExit(msg, data)         do     {      printf(msg,data); \
         exit(EXIT_FAILURE);                             \
     } while (0)
 

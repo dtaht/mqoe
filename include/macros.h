@@ -1,4 +1,6 @@
-#define PUT_STAT_U32(attr, data) do {				       \
+#define BIT(val) (1<<(val))
+
+#define PUT_STAT_U32(attr, data) do {							\
 		if (nla_put_u32(d->skb, TCA_CAKE_STATS_ ## attr, data)) \
 			goto nla_put_failure;			       \
 	} while (0)
