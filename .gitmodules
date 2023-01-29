@@ -31,3 +31,6 @@
 [submodule "yyjson"]
 	path = yyjson
 	url = https://github.com/ibireme/yyjson.git
+[submodule "kcgi"]
+	path = kcgi
+	url = https://github.com/kristapsdz/kcgi.git

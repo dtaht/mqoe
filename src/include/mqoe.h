@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <sys/mman.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -12,8 +13,8 @@
 #include <getopt.h>
 #include <linux/tcp_metrics.h>
 #include <linux/types.h>
-#include <stdbool.h>
-#include "include/mqoe_version.h"
+#include <arpa/inet.h>
+#include "version.h"
 
 #define CLOCKID CLOCK_REALTIME
 #define errExit(msg, data)         do     {      printf(msg,data); \
@@ -30,4 +31,5 @@
 
 typedef __u8 u8;
 typedef __u32 u32;
+typedef __u64 u64;
 typedef __uint128_t u128;
