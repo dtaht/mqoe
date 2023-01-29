@@ -1,6 +1,7 @@
 parse
 mqoe
 *.o
+a.out
 
 # Ignore project folders for some IDEs
 .idea/
