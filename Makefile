@@ -36,7 +36,7 @@ clean:
 	-rm -f $(PROGS) version.h *.o *~ core TAGS gmon.out
 
 etags:
-	find src -type f \( -name \*.c -o -name \*.h \) | xargs etags --append
+	find . -type f \( -name \*.c -o -name \*.h \) | xargs etags --append
 
 include/version.h: $(SRCS)
 	./generate-version.sh > include/version.h
