@@ -2,9 +2,9 @@ PREFIX = /usr/local
 MANDIR = $(PREFIX)/share/man
 CDEBUGFLAGS = -Os -g -Wall
 DEFINES = $(PLATFORM_DEFINES)
-INCLUDES = ../include/
-CFLAGS = $(CDEBUGFLAGS) $(DEFINES) $(EXTRA_DEFINES)
-LDLIBS = -lrt
+INCLUDES = -Iinclude/ -I..
+CFLAGS = $(CDEBUGFLAGS) $(DEFINES) $(EXTRA_DEFINES) $(INCLUDES) 
+LDLIBS = -lrt util2.o
 LIBS=-I/usr/local/include -lcgic
 DEBUG=-DDEBUG 
 #DEBUG=-DDEBUG -DDUMMY_SERVER -DDUMMY_CLIENT
@@ -15,8 +15,8 @@ CGIDIR=/usr/lib/cgi-bin
 BINDIR=$(HOME)/bin
 VERSION=include/version.h
 
-SRCS = mqoe.c
-OBJS = mqoe.o
+SRCS = mqoe.c netlink.c util2.c config_parse.c
+OBJS = mqoe.o netlink.o util2.o config_parse.o
 
 .PHONY: install
 
