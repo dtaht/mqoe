@@ -6,6 +6,17 @@
 #include <stdint.h> /* int64_t */
 #include <kcgi.h>
 
+struct callbacks {
+		char *route;
+		(*cbk);
+};
+
+struct callbacks * a = {
+		{ "/api/index", index() },
+		{ "/api/json", json() },
+		{ 0, done() }
+}
+
 int main(void) {
     struct kreq r;
     const char *page = "index";

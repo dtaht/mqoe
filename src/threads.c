@@ -29,6 +29,13 @@ threaded_reader() {
 		}
 }
 
+struct thread_options {
+	size_t msize;
+	size_t stack_size;
+	void *mem;
+	pthread_affinity;
+}
+
 static
 void *thr_reader(void *_count)
 {

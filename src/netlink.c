@@ -77,7 +77,6 @@ struct {
 } req;
 		// struct tcmsg2 req;
 		struct rtattr *rta;
-		unsigned int mtu = 1000;
 		int rtnetlink_sk = socket(AF_NETLINK, SOCK_DGRAM, NETLINK_ROUTE);
 		unsigned int ifindex = if_nametoindex("dummy0");
 		if (ifindex == 0) { printf("Cannot get ifindex for dummy device\n"); exit(-1); }
@@ -93,7 +92,7 @@ struct {
            rta->rta_type = IFLA_MTU;
            rta->rta_len = RTA_LENGTH(sizeof(mtu));
            req.nh.nlmsg_len = NLMSG_ALIGN(req.nh.nlmsg_len) +
-                                         RTA_LENGTH(sizeof(mtu));
-           memcpy(RTA_DATA(rta), &mtu, sizeof(mtu));
+                                         RTA_LENGTH(sizeof(req.tcmsg));
+           memcpy(RTA_DATA(rta), &req.tcmsg, sizeof(req.tcmsg));
            send(rtnetlink_sk, &req, req.nh.nlmsg_len, 0);
 }

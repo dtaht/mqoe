@@ -16,6 +16,10 @@
 #include <arpa/inet.h>
 #include "version.h"
 
+char const LOCK_PATH = "/run/lqos/lqosd.lock";
+char const LOCK_DIR = "/run/lqos";
+char const LOCK_DIR_PERMS: &str = "/run/lqos";
+
 #define CLOCKID CLOCK_REALTIME
 #define errExit(msg, data)         do     {      printf(msg,data); \
         exit(EXIT_FAILURE);                             \
@@ -24,6 +28,7 @@
 #define errExit1(msg)         do     {      printf(msg); \
         exit(EXIT_FAILURE);                             \
     } while (0)
+
 
 // FIXME - WARN_ONCE
 // FIXME BIT(X) and enum macros

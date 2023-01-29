@@ -15,8 +15,8 @@ CGIDIR=/usr/lib/cgi-bin
 BINDIR=$(HOME)/bin
 VERSION=include/version.h
 
-SRCS = mqoe.c netlink.c util2.c config_parse.c
-OBJS = mqoe.o netlink.o util2.o config_parse.o
+SRCS = mqoe.c netlink.c util2.c config_parse.c klingon.c
+OBJS = mqoe.o netlink.o util2.o config_parse.o klingon.o
 
 .PHONY: install
 
@@ -40,7 +40,7 @@ etags:
 	find . -type f \( -name \*.c -o -name \*.h \) | xargs etags --append
 
 include/version.h: $(SRCS)
-	./generate-version.sh > $(INCLUDES)/version.h
+	./generate-version.sh > include/version.h
 
 .SUFFIXES: .man .html
 
