@@ -34,3 +34,9 @@
 [submodule "kcgi"]
 	path = kcgi
 	url = https://github.com/kristapsdz/kcgi.git
+[submodule "ubench.h"]
+	path = ubench.h
+	url = https://github.com/sheredom/ubench.h.git
+[submodule "notcurses"]
+	path = notcurses
+	url = https://github.com/dankamongmen/notcurses.git
