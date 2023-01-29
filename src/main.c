@@ -121,8 +121,6 @@ int forkit(args *a)
 	struct itimerspec new_value = {0};
 
 	i32 timer = timerfd_create(CLOCK_REALTIME, 0);
-
-
 	new_value.it_interval = a->interval;
 	new_value.it_value = a->interval;
 
