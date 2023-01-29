@@ -10,6 +10,9 @@
 
 // These functions are lightly warmed over from the babeld sources
 // Which are mit licensed. And made more threadsafe.
+// It hurts me to do this. This is an xor(u128 a, u128 a)
+
+const unsigned char zeroes[16] = {};
 
 const unsigned char v4prefix[16] =
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xFF, 0xFF, 0, 0, 0, 0 };
@@ -90,6 +93,31 @@ fromhex(unsigned char *dst, const char *src, int n)
         dst[i] = a*16 + b;
     }
     return n/2;
+}
+
+int
+parse_address(const char *address, unsigned char *addr_r, int *af_r)
+{
+    struct in_addr ina;
+    struct in6_addr ina6;
+    int rc;
+
+    rc = inet_pton(AF_INET, address, &ina);
+    if(rc > 0) {
+        memcpy(addr_r, v4prefix, 12);
+        memcpy(addr_r + 12, &ina, 4);
+        if(af_r) *af_r = AF_INET;
+        return 0;
+    }
+
+    rc = inet_pton(AF_INET6, address, &ina6);
+    if(rc > 0) {
+        memcpy(addr_r, &ina6, 16);
+        if(af_r) *af_r = AF_INET6;
+        return 0;
+    }
+
+    return -1;
 }
 
 unsigned char *
