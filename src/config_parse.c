@@ -1,5 +1,5 @@
-#include "include/mqoe.h"
-#include "include/config_parse.h"
+#include "mqoe.h"
+#include "config_parse.h"
 
 #include "tomlc99/toml.h"
 

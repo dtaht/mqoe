@@ -1,4 +1,4 @@
-#include "include/mqoe.h"
+#include "mqoe.h"
 #include "main.h"
 
 // Toml, json, and csv, oh my
