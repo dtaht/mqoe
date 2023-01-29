@@ -28,3 +28,6 @@
 [submodule "tomlc99"]
 	path = tomlc99
 	url = git@github.com:cktan/tomlc99.git
+[submodule "yyjson"]
+	path = yyjson
+	url = https://github.com/ibireme/yyjson.git

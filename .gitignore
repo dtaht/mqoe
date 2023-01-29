@@ -12,6 +12,7 @@ src/bin/webusers
 src/bin/Rocket.toml
 
 include/mqoe_version.h
+mqoe
 
 # Ignore project folders for some IDEs
 .idea/

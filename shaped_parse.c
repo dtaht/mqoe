@@ -1,91 +1,114 @@
 #include "include/mqoe.h"
 #include <csv.h>
 
-// enum ShapedFields(circuit_id);
-#define SHAPED_FIELDS 13
-
-struct ShapedDevices {
-       char *circuit_id;
-       char *circuit_name;
-       char *device_id;
-       char *device_name;
-       char *parent_node;
-       char mac[6];
-       char *ipv4;
-       char *ipv6;
-       u32 download_min;
-       u32 download_max;
-       u32 download_min2;
-       u32 download_max2;
-       char *comment;
+plans = {
+{ "6x1", 10, 3, 10, 3 },
+{ "10x1", 10, 3, 10, 3 },
+{ "25x3", 10, 3, 10, 3 },
+{ "25x10", 10, 3, 10, 3 },
+{ "25x25", 10, 3, 10, 3 },
+{ "100x10", 10, 3, 10, 3 },
+{ "100x20", 10, 3, 10, 3 },
+{ "100x100", 10, 3, 10, 3 },
+{ "200x20", 10, 3, 10, 3 },
+{ "200x100", 10, 3, 10, 3 },
+{ "500x100", 10, 3, 10, 3 },
+{ "500x100", 10, 3, 10, 3 },
+{ "1000x100", 10, 3, 10, 3 },
+{ "1000x1000", 10, 3, 10, 3 },
+{ "", 10, 3, 10, 3 },
 };
 
-static size_t count;
+// cut-through queueing
 
-static struct counts {
-  long unsigned fields;
-  long unsigned rows;
-  char **ptrs[SHAPED_FIELDS];
+ips = {
+
 };
 
-/* void cb1 (void *s, size_t i, void *outfile) {
-  csv_fwrite((FILE *)outfile, s, i);
-  fputc(',',(FILE *)outfile);
+devices = {
+
+};
+
+char *IPV4RANGE = ẅhatever;
+char *IPV6RANGE = ẅhatever;
+
+/* flent duty cycles crusader
+ * curl
+ * netflix */
+
+/* --depth // depth of hieachy
+ * --delays
+ * --machines
+ * --teardown
+ * --up
+ * --down
+ */
+
+/* output a network.json
+ * generate dns names according to this scheme
+ * output a ShapedDevices.csv
+ * output a netns scheme
+ * establish test servers running on each server
+ * output babel or static routes
+ * generate test script
+ * generate teardown commands
+ */
+
+gensim() {
+    for(i32 p = 0; p < sizeof(plans); p++) {
+        for(i32 d = 0; d < sizeof(delays); d++) {
+            for(i32 ip = 0; ip < sizeof(ips); ip++) {
+                for(i32 dev = 0; dev < sizeof(devs); dev++) {
+
+            }
+
+            }
+        }
+    }
 }
 
-void cb2 (int c, void *outfile) {
-  fseek((FILE *)outfile, -1, SEEK_CUR);
-  fputc('\n', (FILE *)outfile);
-  } */
 
+typedef enum {
+       circuit_id, circuit_name, device_id, device_name,
+       parent_node, mac, ipv4, ipv6,
+       download_min, download_max, download_min2, download_max2,
+       comment, SHAPED_MAX,
+} shaped;
+
+char *shaped_devices[SHAPED_MAX];
+
+static struct counts {
+    u32 fields;
+    u32 rows;
+    char *ptrs[SHAPED_MAX];
+};
+
+void validate(void *buf,u32 entries) {
+    u32 c = 0;
+    for(shaped s = 0; s < SHAPED_MAX; s++)
+        printf()
+}
+
+// FIXME, don increment fields or rows on comments or corruptions
 void cb1 (void *s, size_t len, void *data) {
     struct counts *c = ((struct counts *)data);
-    u8 buf[len];
-    strncpy(buf,s,len);
-    if(buf[0] == '#') {
+    if((char *)s[0] == '#') {
         return;
     }
-    if(c->rows == 1) return; // throw away first line
-
-    buf[len] = 0;
-    switch(c->fields) {
-        case 0:
-            c->ptrs[c->fields] = calloc(len + 1,1);
-            printf("%s ",buf);
-            break;
-        case 1:
-            printf("%s ",buf);
-            break;
-        case 8:
-        case 9:
-        case 10:
-        case 11:
-            printf("%sMbit ",buf);
-            break;
-        case 12: printf("%s\n", buf);
-    }
-    ++c->fields;
+    c->ptrs[c->fields++] = calloc(len + 1,1);
+    strncpy(c->ptrs[c->fields++],s,len);
 }
 
 void cb2 (int c, void *data) {
     struct counts *s = ((struct counts *)data);
-    s->rows++;
     s->fields = 0;
-//    struct shaper *s = (struct shaper *) data;
-/*    strcpy(shaper->circuit_id,s[c++]);
-    strcpy(shaped->circuit_name,s[c++]);
-    strcpy(shaped->device_id,s[c++]);
-    strcpy(shaped->device_name);
-    char *shaped->parent_node;
-    char shaped->mac[6];
-    char shaped->*ipv4;
-    char shaped->*ipv6;
-    strlul(download_min);
-    u32 download_max;
-    u32 download_min2;
-    u32 download_max2;
-    char shaped->*comment; */
-//    count++;
+//    if (s->ptrs[download_min] is asci)
+    if (false) {
+        for(shaped fields = 0; fields < SHAPED_MAX; fields++)
+            free(s->ptrs[fields]);
+        return; // throw away malformed data (title)
+    }
+    s->ptrs = s->ptrs[++s->rows];
 }
 
 int main(int argc, char *argv[]){
@@ -108,13 +131,12 @@ int main(int argc, char *argv[]){
 
     bytes_read = statbuf.st_size;
     buf = malloc(bytes_read * sizeof(struct ShapedDevices)); // It is impossible to overrun this but excessive
-    // ptr!!
+    count->ptr = buf;
     if (csv_parse(&p, ptr, bytes_read, cb1, cb2, &c) != bytes_read) errExit("Error while parsing file: %s\n", csv_strerror(csv_error(&p)) );
     csv_fini(&p, cb1, cb2, &c);
     buf = realloc(buf, c.rows * sizeof(struct ShapedDevices)); // But give all that memory back
     if((munmap(ptr, statbuf.st_size) != 0)) errExit1("Unmapping failed");
     printf("%lu fields, %lu rows\n", c.fields, c.rows);
-
     csv_free(&p);
 
     return 0;

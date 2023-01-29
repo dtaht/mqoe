@@ -71,7 +71,7 @@ enum filter_cmds {
 
 // FIXME These are bits
 
-enum ip_options { NOP, ll, mc, ula, lo, test, exp };
+// enum ip_options { NOP, ll, mc, ula, lo, test, exp };
 
 // ip_options = none, ll, mc, ula, lo, test, exp
 // fixme
