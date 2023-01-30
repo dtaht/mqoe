@@ -35,6 +35,7 @@ format_thousands(unsigned int value)
 const char * scale_bits(u64 n) {
 		static __thread char buf[THREAD_WASTE][20];
 		static __thread int i = 0;
+		i = (i + 1) % THREAD_WASTE;
 		if (n > GBT) {
 				snprintf(buf[i], 20, "%ul.%.2ul gbit/s", n / GBT, n % GBT);
 		} else if ( n > MBT ) {
