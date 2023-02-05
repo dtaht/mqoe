@@ -40,3 +40,6 @@
 [submodule "notcurses"]
 	path = notcurses
 	url = https://github.com/dankamongmen/notcurses.git
+[submodule "pqsort"]
+	path = pqsort
+	url = https://github.com/Freaky/pqsort.git
