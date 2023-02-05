@@ -29,8 +29,8 @@ devices = {
 
 };
 
-char *IPV4RANGE = ẅhatever;
-char *IPV6RANGE = ẅhatever;
+char *IPV4RANGE = hatever;
+char *IPV6RANGE = hatever;
 
 /* flent duty cycles crusader
  * curl

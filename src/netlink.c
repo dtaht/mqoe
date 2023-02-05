@@ -38,9 +38,8 @@ struct {
 } req;
 
            struct rtattr *rta;
-           unsigned int mtu = 1000;
            int rtnetlink_sk = socket(AF_NETLINK, SOCK_DGRAM, NETLINK_ROUTE);
-   	   unsigned int ifindex = if_nametoindex("dummy0");
+		   unsigned int ifindex = if_nametoindex("dummy0");
  	   if (ifindex == 0) { printf("Cannot get ifindex for dummy device\n"); exit(-1); }
            memset(&req, 0, sizeof(req));
            req.nh.nlmsg_len = NLMSG_LENGTH(sizeof(req.iface));

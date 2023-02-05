@@ -5,6 +5,7 @@
 
 struct toml_table_t *mqoe_config;
 
+// https://www.mattmathis.net/
 // Grump, no mmap
 
 static void error(const char* msg, const char* msg1)

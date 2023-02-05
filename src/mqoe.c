@@ -101,17 +101,17 @@ typedef struct {
 } config;
 
 bool usage_mqoe(int c, char **argv) {
-  printf("mpqoe options!\n");
+  printf("mpqoe options:n");
   exit(-1);
 }
 
 bool usage_mqoed(int c, char **argv) {
-  printf("mqoed options\n");
+  printf("mqoed options:\n");
   exit(-1);
 }
 
 bool usage_mqtop(int c, char **argv) {
-  printf("mqtop options!\n");
+  printf("mqtop options:\n");
   exit(-1);
 }
 
