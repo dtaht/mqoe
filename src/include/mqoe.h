@@ -18,7 +18,7 @@
 
 char const LOCK_PATH = "/run/lqos/lqosd.lock";
 char const LOCK_DIR = "/run/lqos";
-char const LOCK_DIR_PERMS: &str = "/run/lqos";
+char const LOCK_DIR_PERMS = "/run/lqos";
 
 #define CLOCKID CLOCK_REALTIME
 #define errExit(msg, data)         do     {      printf(msg,data); \
