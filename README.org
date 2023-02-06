@@ -1,0 +1,87 @@
+* MQOE - An emulator for high speed packet processing, and SQM queuing
+
+This started life as an attempt to write a sim to exercise the
+LibreQos codebase. It then started to grow and grow.
+
+** Why
+
+As I looked at the python and rust explosions of veneers over the C functions,
+the error checking, the close to the kernel needs, verses what I wanted in an
+emulator, I decided that perhaps it would be best to outline my ideas in my
+native tongue, C.
+
+It helps that there are things that are congruent with libreqos´s main goals,
+(like adopting netlink), and lets me deal with my frustration in not being
+able to express myself in either python or rust very well. 
+
+*** Rust hurts me
+
+- Creating a lookup table required programming the AST
+- FIXED: Creating fdtimers not correctly supported by tokio
+- Pulling from postgres 
+- Wanting console I/O
+- I wanted to use the tc_flower classifier and other htb offloads if at all possible
+
+*** C is a natural match for kernel data structures
+
+Using FFI for rust was being a pain in the ass
+
+*** rediculous amounts of cognitive overhead
+
+You typically have to declare things everywhere
+
+./Cargo.toml
+./lqos_bus/Cargo.toml
+./lqos_config/Cargo.toml
+./lqos_node_manager/Cargo.toml
+./lqos_python/Cargo.toml
+./lqos_queue_tracker/Cargo.toml
+./lqos_sys/Cargo.toml
+./lqos_utils/Cargo.toml
+./lqosd/Cargo.toml
+./lqtop/Cargo.toml
+./webusers/Cargo.toml
+./xdp_iphash_to_cpu_cmdline/Cargo.toml
+./xdp_pping/Cargo.toml
+
+*** network namespaces are the way forward towards programming a dataplane
+
+Rust had all these really great abstractions, but ... a lookup table, doubly
+linked lists, etc, etc were things that I normally reached for.
+
+*** Adopting the C17 standard
+
+It turned out there were C libraries already written that
+did what I needed, in most cases faster than anything else.
+
+*** Network Namespaces in particular
+
+Were tricky, where the C interfaces to clone were really straightforward
+nowadays.
+
+***  Driving tests from the client
+
+Attempting to setup 40k things all at once to emulate stuff did not scale, and I
+realized that driving tests from the client was what we wanted to do in the future.
+
+And to do that I needed network namespaces, and the same comprehensive
+picture of what the network looked like.
+
+Also the sqm infrastructure was good a second time, locally, in this
+case.
+
+* Downsides
+
+** Threading is a bitch in C
+- Answer: use memfds and segmented memory to protect myself
+** ZeroCopy is hard to express in general
+** Atomic ops require care
+
+* Plan
+
+** Rewrite all the python into C
+	The only bottleneck here was binpack and perhaps an AVL tree.
+- Adopt toml throughout
+- Use a real database format for that data
+- Busybox the results as we go
+
