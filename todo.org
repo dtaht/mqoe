@@ -2,3 +2,8 @@
 * TODO install csv library
 * TODO fix makefile
 
+* Odd notes
+
+this little function is completely reusable for parsing other stuff
+
+int toml_rtoi(toml_raw_t src, int64_t *ret_) {
