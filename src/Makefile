@@ -34,7 +34,7 @@ install:
 install-stripped:
 
 clean:
-	-rm -f $(PROGS) version.h *.o *~ core TAGS gmon.out
+	-rm -f $(PROGS) version.h *.o *~ core TAGS gmon.out a.out
 
 etags:
 	find . -type f \( -name \*.c -o -name \*.h \) | xargs etags --append

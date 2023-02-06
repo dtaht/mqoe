@@ -10,6 +10,7 @@
 const char *jsontemplate = "{\"name\":\"Mash\",\"star\":4,\"hits\":[2,2,1,3]}";
 const char *toml = "";
 
+
 struct arg {
 	i32 count;
 	struct timespec interval;

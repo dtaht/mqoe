@@ -1,4 +1,5 @@
-// My own idiosyncratic brand of C
+
+// My own indiosyncratic brand of C
 
 #define E(...) 
 #define E1(...) 

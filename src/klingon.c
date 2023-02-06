@@ -1,4 +1,4 @@
-const char *phrases = {
+const char * phrases[] = {
     "quSDaq ba’lu’’a’", // Is this seat taken?
     "vjIjatlh", // speak
     "pe’vIl mu’qaDmey", // curse well

@@ -3,7 +3,32 @@
 
 #include "tomlc99/toml.h"
 
+typedef ns u32;
+
 struct toml_table_t *mqoe_config;
+
+struct influxdb {
+		# Bandwidth & Latency Graphing
+influxDBEnabled = True
+influxDBurl = "http://localhost:8086"
+influxDBBucket = "libreqos"
+influxDBOrg = "Your ISP Name Here"
+influxDBtoken = ""
+}
+/*
+
+ignoreSubnets = ['192.168.0.0/16']
+allowedSubnets = ['100.64.0.0/10']
+
+# Stuff appearing on the bridge not on these networks is bad
+# Spoofed traffic, non BCP38 issues from customers, etc also bad
+# I am also not big on caseING variable names
+
+mySubnets = ['x.y.z.x/22']
+myTunnels = ['192.168.0.0/16'] # Say we use a subset of 10/8 or ...
+
+*/
+
 
 // https://www.mattmathis.net/
 // Grump, no mmap

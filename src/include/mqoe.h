@@ -16,9 +16,9 @@
 #include <arpa/inet.h>
 #include "version.h"
 
-char const LOCK_PATH = "/run/lqos/lqosd.lock";
-char const LOCK_DIR = "/run/lqos";
-char const LOCK_DIR_PERMS = "/run/lqos";
+const char *LOCK_PATH = "/run/lqos/lqosd.lock";
+const char *LOCK_DIR = "/run/lqos";
+const char *LOCK_DIR_PERMS = "/run/lqos";
 
 #define CLOCKID CLOCK_REALTIME
 #define errExit(msg, data)         do     {      printf(msg,data); \

@@ -13,7 +13,7 @@ struct callbacks {
 
 struct callbacks * a = {
 		{ "/api/index", index() },
-		{ "/api/json", json() },
+		{ "/api/bandwidth", json() },
 		{ 0, done() }
 }
 
