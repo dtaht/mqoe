@@ -1,87 +1,115 @@
-* MQOE - An emulator for high speed packet processing, and SQM queuing
+* MQOE - A not even compiling emulator for high speed packet processing, and SQM queuing
 
-This started life as an attempt to write a sim to exercise the
-LibreQos codebase. It then started to grow and grow.
+This started life as an attempt to write a simulation to exercise the [[https://github.com/LibreQoE/LibreQoS#support-libreqos][LibreQos codebase]]. It then started to grow and grow, as I rewrote code from the python and rust to C, and began to understand it better in my own aging idioms.
 
-** Why
+This code does not work. It may never work. Right now I am off on another task - trying to speed up netlink to handle polling
+40 million live queues (in the kernel) at about 1ms intervals, which might take me a while!
 
-As I looked at the python and rust explosions of veneers over the C functions,
-the error checking, the close to the kernel needs, verses what I wanted in an
-emulator, I decided that perhaps it would be best to outline my ideas in my
-native tongue, C.
+For some of my lonely rantings about proper network measurements below a 1ms sample rate please see this [[recent blog post on flent][https://blog.cerowrt.org/post/flaws_in_flent/]].
 
-It helps that there are things that are congruent with libreqos´s main goals,
-(like adopting netlink), and lets me deal with my frustration in not being
-able to express myself in either python or rust very well. 
+** Why MQOE?
 
-*** Rust hurts me
+As I looked at the python and rust explosions of error checking over the Linux OS API, my insanely close to the kernel needs, and the ISP focus for the product, verses what I wanted in an emulator and test tool, I decided that perhaps it would be best to outline my ideas in my native tongue, C. Writing eBPF in C is pretty hard, but not in C, eludes me.
 
-- Creating a lookup table required programming the AST
+It helps that there are things that are congruent with libreqos´s main goals, (like adopting netlink), and lets me deal with my frustration in not being able to express myself in either python or rust very well.  Getting frustrated in C provides balance.
+
+***  Driving 40k simultaneous user emulations from the client
+
+Attempting to setup 40k vms all at once to emulate stuff did not scale (try firing up even 10k routing daemons in containers, too! Make popcorn!), and I realized that driving tests from a subset of clients to a limited number of virtualized servers and server was what we wanted to do in the future.
+
+We could then place various servers at various netem distances at the client, and fire off tests in each client randomly.  To do that I needed network namespaces, and the same comprehensive picture of what the network looked like that was already in libreqos. Except that was expressed in two languages I am not very good at. So rewriting that is helping me understand those things better.
+
+Also emulating the existing (or lack of!) SQM/AQM/FQ ISP infrastructure as we already do on [[https://payne.taht.net][payne]], was good a second time, locally, for a sim. I have already
+found 3 nice new optimizations for sch_cake with the existing sim we have...
+
+*** Rust hurts me to think in (presently)
+
+I have only been at rust 1 month, after 40 years of programming in oh, I forget, 40 or so different languages? Rust used to make me nuts hourly, now it is just daily. My productivity is still in the toilet. I have written, oh, 12 lines of fresh rust code (but regularly and easily [[https://github.com/LibreQoE/LibreQoS/issues/229][break the codebase]]) since the project's starti. 
+
+
+things in rust that have made me crazy so far:
+
+- Just WAY().too().much().typing().that.is.difficult.to.unpack().to_string().a.set.of.thoughts.together()?
+- No doubly linked lists? no uthash.h? uthash.h and inline qsort are all I need in C...
+- Creating a lookup table required programming the AST!?
 - FIXED: Creating fdtimers not correctly supported by tokio
 - Pulling from postgres 
-- Wanting console I/O
+- Wanting console I/O (pretty nifty console I/O in rust nowdays)
 - I wanted to use the tc_flower classifier and other htb offloads if at all possible
 
-*** C is a natural match for kernel data structures
+But: If you want HARD to think in, oh C or Rust programmer? Trying writing anything that makes sense to yourself in [[https://liburcu.org/][Userspace-RCU]]! Kernel RCU is really, really nice, and easy to think in, in comparison to userspace RCU, and that was my first choice for this project. 
 
-Using FFI for rust was being a pain in the ass
+I tossed off the 2k+ lines of broken C code here over the course of 3 days.
 
-*** rediculous amounts of cognitive overhead
+**** C is a natural match for kernel data structures
 
-You typically have to declare things everywhere
+Using FFI for rust was being a pain in the ass. In MQOE I can just include all the linux headers I want without having to think about it much. I can also cop much existing C code like iproute2 and ethtool and make it just work in minutes (thank you devs and GPLv2!) 
 
-./Cargo.toml
-./lqos_bus/Cargo.toml
-./lqos_config/Cargo.toml
-./lqos_node_manager/Cargo.toml
-./lqos_python/Cargo.toml
-./lqos_queue_tracker/Cargo.toml
-./lqos_sys/Cargo.toml
-./lqos_utils/Cargo.toml
-./lqosd/Cargo.toml
-./lqtop/Cargo.toml
-./webusers/Cargo.toml
-./xdp_iphash_to_cpu_cmdline/Cargo.toml
-./xdp_pping/Cargo.toml
+**** Rust requires crazy amounts of cognitive overhead
 
-*** network namespaces are the way forward towards programming a dataplane
+I write error checked macros like
 
-Rust had all these really great abstractions, but ... a lookup table, doubly
-linked lists, etc, etc were things that I normally reached for.
+SCPY(a,arg) - 
+ICPY(b,arg) - like C was assembly language. Rust folk sling strings around. Hilariously I 
+don't remember the C preprocessor magic I needed to do that like in the old days. It is around here somewhere.
 
-*** Adopting the C17 standard
+You typically have to declare things in 4 different files to do even the simplest thing. I see rust after rust program that
+consists of essentially one line code surrounded by a directory structure, Cargo.toml, etc.
 
-It turned out there were C libraries already written that
-did what I needed, in most cases faster than anything else.
+The whole filesystem as an object store in the modern programming environments concept I still haven't found a way to deal with in
+emacs. I end up with 8 copies of main.rs<1> from different places. I need some different concept of "buffer" to flip things around that emacs probably has. 
 
-*** Network Namespaces in particular
+For me a file indicates at least some of its purpose. e.g. balance.c. This is not rusts fault, but I still fail to understand how files morphed from names for things to names for verbs. I have been out of it for a while. Who changed this? When did this happen? Who is responsible? Can they be shot? Is it too late for filesystems?
 
-Were tricky, where the C interfaces to clone were really straightforward
-nowadays.
+**** network namespaces are the way forward towards programming a dataplane
 
-***  Driving tests from the client
+Rust had all these really great abstractions, but ... that lookup table, doubly
+linked lists, etc, etc were things that I normally reached for. The many
+uses of memfd and the new clone3 system call for containers has great appeal. I do not care for threads much in the first place,
+preferring iron jails for subprocesses with limited permissions.
 
-Attempting to setup 40k things all at once to emulate stuff did not scale, and I
-realized that driving tests from the client was what we wanted to do in the future.
+LibreQos presently uses a nifty xdp + htb-based tree but not network namespaces, and to simulate the varying characteristics of the internet with delays, loss, and jitter, the only way I could think of it was to connect up a virtualized multi-hop via containers, model the network as a tree, and add [[https://www.bufferbloat.net/projects/codel/wiki/Best_practices_for_benchmarking_Codel_and_FQ_Codel/][netem very carefully]] all over the place to it.
 
-And to do that I needed network namespaces, and the same comprehensive
-picture of what the network looked like.
+*** Wow, C in userspace is fun again
 
-Also the sqm infrastructure was good a second time, locally, in this
-case.
+In adopting the C17 standard and playing with modern compilers...  It turned out there were C libraries already written and long available that did what I needed, in most cases faster than anything else, and the new C standard had some interesting new features.
 
-* Downsides
+**** clang-lsp
 
-** Threading is a bitch in C
-- Answer: use memfds and segmented memory to protect myself
-** ZeroCopy is hard to express in general
-** Atomic ops require care
+It also turned out that the LSP interface so needed for most modern languages had also come a long way with C!
 
-* Plan
+It was quite pleasant to code with it once I got it to timeout at about the right interval and give me a popup, and I am going to add an clang-LSP interface to my C kernel programming activitities now, instead of my aging default of emacs + semantic. Win. That said, I kind of expect it to choke on the kernel, and try to inflict its choices for formatting my code on me...
 
-** Rewrite all the python into C
-	The only bottleneck here was binpack and perhaps an AVL tree.
-- Adopt toml throughout
-- Use a real database format for that data
+**** Network Namespaces in particular
+
+Remain tricky!
+
+**** C Downsides
+
+- Threading is STILL a bitch in C
+  Answer: use memfds and segmented memory to protect myself
+- try the new clone3 calls
+- ZeroCopy is hard to express in general
+- Atomic ops require care
+- Few (including me) are good at C anymore
+- Why not Zig? Zig is tempting, no FFI needed... (Try ziiiig)
+
+Go is a no-go for this project. Not fast enough, too much garbage collection. I think.
+
+* Plan going forward
+
+VE HAVE NO STINKING PLANTHS. For an actually working and much more mature codebase,
+please see [LibeQos](https://github.com/LibreQoE/LibreQoS#support-libreqos)
+
+As I write this I had only burned two weeks on the project:
+
+- [ ] Rewrite all the python into C
+	The only bottleneck here was finding a good binpack algo and perhaps an AVL tree (plenty of AVL algos, several clean binpack ones). And time. I think rewriting the python into C is a good idea. Eventually.
+- [*]  Adopt toml throughout - this will be a win for the python too.
+- Use a real database format for that data, like good ole dbf
 - Busybox the results as we go
 
+** Fun discoveries
+
+- The units program still exists.
+- Modern LSP backends have got quite good for C!
