@@ -10,6 +10,8 @@ static void error(const char* msg, const char* msg1)
     exit(1);
 }
 
+// Hah. Fell apart on writing this macro last night
+
 #define SCPY(s,arg) { toml_datum_t t = toml_string_in(ptr, #arg); if(t.ok && strlen(t.u.s) < sizeof(conf->## s ## . ## arg)) { strcpy(conf->## s ## . ## arg,t.u.s); } else { printf("string length exception"); } }
 #define ICPY(s,arg) { conf->s##.##arg; }
 #define ACPY(s,arg) { conf->s##.##arg; }
@@ -20,6 +22,28 @@ static void error(const char* msg, const char* msg1)
     }}	\									   \
 
 config * conf;
+
+/*
+  if (!(ptr = toml_table_in(ptr, "main")))
+        error("missing [main]", "");
+
+    if (!(ptr = toml_table_in(ptr, "perms")))
+        error("missing [perms]", "");
+
+    if (!(ptr = toml_table_in(ptr, "bridge")))
+        error("missing [bridge]", "");
+
+    if (!(ptr = toml_table_in(ptr, "lqos")))
+        error("missing [lqos]", "");
+
+    if (!(ptr = toml_table_in(ptr, "tuning")))
+        error("missing [tuning]", "");
+
+    if (!(ptr = toml_table_in(ptr, "influx")))
+        error("missing [influx]", "");
+
+*/
+
 
 int main(int argc, char **argv)
 {
@@ -43,14 +67,8 @@ int main(int argc, char **argv)
     // 2. Traverse to a table.
     toml_table_t* ptr = NULL;
 
-
-    if (!(ptr = toml_table_in(ptr, "main")))
-        error("missing [main]", "");
-
-    if (!(ptr = toml_table_in(ptr, "perms")))
-        error("missing [perms]", "");
-
-	SPUL(perms);
+	SPUL(main);
+  	SPUL(perms);
 	ICPYD(s,max_users,32);
 	ICPYD(s,umask,0770);
 	SCPYD(s,group,"lqos");
@@ -60,19 +78,6 @@ int main(int argc, char **argv)
 	SPUL(stats)
 	SPUL(influx);
 	BCPYD(s,enable,false);
-
-    if (!(ptr = toml_table_in(ptr, "bridge")))
-        error("missing [bridge]", "");
-
-    if (!(ptr = toml_table_in(ptr, "lqos")))
-        error("missing [lqos]", "");
-
-    if (!(ptr = toml_table_in(ptr, "tuning")))
-        error("missing [tuning]", "");
-
-    if (!(ptr = toml_table_in(ptr, "influx")))
-        error("missing [influx]", "");
-
 
     // 3. Extract values
     toml_datum_t host = toml_string_in(ptr, "host");
