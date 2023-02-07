@@ -74,11 +74,13 @@ In adopting the C17 standard and playing with modern compilers...  It turned out
 
 **** clang-lsp
 
-It also turned out that the LSP interface so needed for most modern languages had also come a long way with C!
+I finally gave up on years of a lagging emacs implementation and installed doom emacs. Doom is REALLY NICE.
 
-It was quite pleasant to code with it once I got it to timeout at about the right interval and give me a popup, and I am going to add an clang-LSP interface to my C kernel programming activitities now, instead of my aging default of emacs + semantic. Win. That said, I kind of expect it to choke on the kernel, and try to inflict its choices for formatting my code on me...
+It also turned out that the Clang-LSP interface so needed for most modern languages had also come a long way with C!
 
-A BOFH plus! I can write 3k lines of totally borken C code and have LSP complain mightly at me and just ignore it's insistent advice. Pesky machine. What do you know about the head of programming?
+It was quite pleasant to code with it once I got it to timeout at about the right interval and give me a popup, and I am going to tre to add an clang-LSP interface to my C kernel programming activitities now, instead of my aging default of emacs + semantic. Win. That said, I kind of expect it to choke on the kernel, and try to inflict its choices for formatting my code on me... and I am very happy to NOT be working in the kernel right now.
+
+A BOFH plus! I can write 3k lines of totally borken C code and have LSP complain mightly at me and just ignore it's insistent advice. Pesky machine. What do you know about the heat of programming?
 
 **** Network Namespaces in particular
 
@@ -100,14 +102,14 @@ Go is a no-go for this project. Not fast enough, too much garbage collection. I 
 * Plan going forward
 
 VE HAVE NO STINKING PLANTHS. For an actually working and much more mature codebase,
-please see [LibeQos](https://github.com/LibreQoE/LibreQoS#support-libreqos). 
+[[https://github.com/LibreQoE/LibreQoS#support-libreqos][please see LibeQos]]
 
 As I write this I had only burned two weeks(4 days) on the project. I had started with:
 
 - [ ] Rewrite all the python into C
 	The only bottleneck here was finding a good binpack algo and perhaps an AVL tree (found plenty of AVL algos, several clean binpack ones). And time. I think rewriting the python into C is a good idea. Eventually. The rest is easy.
 
-- [*]  Adopt toml throughout - this will be a win for the python too.
+- [*]  Adopt toml throughout - this will be a win for the python too. I really like toml.
 - Use a real database format for that data, like good ole dbf
 - Busybox the results as we go
 - make it run on openwrt!
