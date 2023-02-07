@@ -1,11 +1,11 @@
-* MQOE - A not even compiling emulator for high speed packet processing, and SQM queuing
+* MQOE - A not even compiling emulator for high speed packet analysis, and SQM for ISPs
 
 This started life as an attempt to write a simulation to exercise the [[https://github.com/LibreQoE/LibreQoS#support-libreqos][LibreQos codebase]]. It then started to grow and grow, as I rewrote code from the python and rust to C, and began to understand it better in my own aging idioms.
 
-This code does not work. It may never work. Right now I am off on another task - trying to speed up netlink to handle polling
-40 million live queues (in the kernel) at about 1ms intervals, which might take me a while!
+This code does not work. It may never work. Right now I am off on another task - trying to speed up netlink to handle sampling
+40 million live queues (in the Linux kernel) at about 1ms intervals, which might take me a while!
 
-For some of my lonely rantings about proper network measurements below a 1ms sample rate please see this [[https://blog.cerowrt.org/post/flaws_in_flent/][recent blog post on flent]] on all the fun you can have when trying to see events at the usec line.
+For some of my lonely rantings about proper network measurements at better than a 1ms sample rate please see this [[https://blog.cerowrt.org/post/flaws_in_flent/][recent rant about flent]] on all the fun you can have when trying to see network events at below the usec line.  Please DM me on the matrix (@dtaht:matrix.org) if you have any suggestiond?
 
 ** Why MQOE?
 
@@ -13,13 +13,13 @@ As I looked at the python and rust explosions of error checking over the Linux O
 
 It helps that there are things that are congruent with libreqos´s main goals, (like adopting netlink), and lets me deal with my frustration in not being able to express myself in either python or rust very well.  Getting frustrated in C provides balance.
 
-*** HARD problem: Driving 40k simultaneous user emulations from the client
+*** HARD problem: Driving 40k simultaneous ISP user emulations from the client
 
-Attempting to setup 40k vms all at once to emulate a big network did not scale (try firing up even 10k routing daemons in containers, too! It's is fun! Make popcorn!), and I realized that after that distaster driving tests from a subset of randomly chosen subset(s) clients to a limited number of virtualized servers and server was what we wanted to do in the future.
+Attempting to setup 40k vms all at once to emulate a big network did not, um, scale. (try firing up even 10k IGP routing daemons in containers, too! It's fun! [[Try rtod!][https://github.com/dtaht/rtod#rtod-routing-tables-of-death]] Make popcorn!), and I realized that after that disaster... that driving accurate tests (like voip, netflix, web, etc) tests from a randomly (but accurately) chosen subset(s) of clients to a limited number of virtualized servers and server was what we wanted to do in the future.
 
-We could then place various servers at various netem distances at the client, and fire off tests in each client randomly.  To do that I needed network namespaces, and the same comprehensive picture of what the network looked like that was already in libreqos. Except that was expressed in two languages I am not very good at. So rewriting that is helping me understand those things better.
+We could then place various servers at various netem distances at the client, and fire off tests in each client based on the statistics we get back from real traffic today, from the real ISPs using libreqos. To do that I needed network namespaces, and the same comprehensive picture of what the network looked like that was already in libreqos. Except that was expressed in two languages I am not very good at. So rewriting that is helping me understand those things better.
 
-Also emulating the existing (or lack of!) SQM/AQM/FQ ISP infrastructure as we already do on [[https://payne.taht.net][payne]], was good a second time, locally, for a sim. I had already found 3 nice new optimizations for sch_cake with the existing sim we have...
+Also emulating the existing (or lack of!) SQM/AQM/FQ ISP infrastructure as we already do on [[https://payne.taht.net][our testbed, payne]], was good to do many, many times, locally, for a sim. I had already found 3 nice new optimizations for sch_cake with the existing sim we have - what more lies beneath? 
 
 *** Rust really hurts me to think in (presently)
 
