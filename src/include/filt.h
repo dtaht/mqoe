@@ -1,3 +1,4 @@
+#pragma once
 enum { nop, ack, } bus;
 enum { nop, ping, } busRequest;
 

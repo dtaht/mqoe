@@ -1,7 +1,7 @@
 #include "include/mqoe.h"
 #include <linux/tcp_metrics.h>
 
-const char *mqoe_options = "c:d:a:b:c";
+static const char *mqoe_options = "c:d:a:b:c";
 
 static const struct option mqoe_long_options[] = {
     {"connect", required_argument, 0, 'c'},
@@ -15,30 +15,8 @@ static const struct option mqoe_long_options[] = {
     {"file", required_argument, 0, 0},
     {0, 0, 0, 0}};
 
-// #include "mqoe.h"
-
-typedef struct {
-  u128 ip;
-  u8 mask;
-  u8 options;
-} trie_ipv6;
-
-typedef struct {
-  u32 ip;
-  u8 mask;
-  u8 options;
-} trie_ipv4;
-
-typedef struct {
-  char sqm[255];
-  trie_ipv4 **my4;
-  trie_ipv6 **my6;
-  char *location;
-  char *bus;
-} config;
-
 bool usage_mqoe(int c, char **argv) {
-  printf("mpqoe options:n");
+  printf("mpqoe options:\n");
   exit(-1);
 }
 

@@ -34,7 +34,10 @@ install:
 install-stripped:
 
 clean:
-	-rm -f $(PROGS) version.h *.o *~ core TAGS gmon.out a.out
+	-rm -f $(PROGS) version.h *.o *~ core TAGS gmon.out a.out include/version.h
+
+version: include/version.h
+	./generate-version.sh include/version.h
 
 etags:
 	find . -type f \( -name \*.c -o -name \*.h \) | xargs etags --append
@@ -47,4 +50,4 @@ include/version.h: $(SRCS)
 .man.html:
 	mandoc -Thtml $< > $@
 
-.PHONY: all install install.minimal uninstall clean
+.PHONY: all install install.minimal uninstall clean version

@@ -1,3 +1,5 @@
+#pragma once
+
 #define BIT(val) (1<<(val))
 
 #define PUT_STAT_U32(attr, data) do {							\

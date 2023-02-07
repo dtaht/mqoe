@@ -12,4 +12,4 @@ else
     version="unknown"
 fi
 
-echo "#define MQOE_VERSION \"$version\""
+echo "#pragma once\n#define MQOE_VERSION \"$version\"" > $1

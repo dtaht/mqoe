@@ -1,5 +1,4 @@
-#ifndef MQOE_BUS_H_
-#define MQOE_BUS_H_
+#pragma once
 #include ¨include/macros.h¨
 
 #if __GLIBC__ < 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ < 27)

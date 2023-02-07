@@ -1,37 +1,8 @@
-#include "mqoe.h"
-// #include "config_parse.h"
-
+#include "include/mqoe.h"
+#include "include/config.h"
 #include "tomlc99/toml.h"
 
-typedef ns u32;
-
 struct toml_table_t *mqoe_config;
-
-struct influxdb {
-		# Bandwidth & Latency Graphing
-influxDBEnabled = True
-influxDBurl = "http://localhost:8086"
-influxDBBucket = "libreqos"
-influxDBOrg = "Your ISP Name Here"
-influxDBtoken = ""
-}
-/*
-
-ignoreSubnets = ['192.168.0.0/16']
-allowedSubnets = ['100.64.0.0/10']
-
-# Stuff appearing on the bridge not on these networks is bad
-# Spoofed traffic, non BCP38 issues from customers, etc also bad
-# I am also not big on caseING variable names
-
-mySubnets = ['x.y.z.x/22']
-myTunnels = ['192.168.0.0/16'] # Say we use a subset of 10/8 or ...
-
-*/
-
-
-// https://www.mattmathis.net/
-// Grump, no mmap
 
 static void error(const char* msg, const char* msg1)
 {
@@ -39,17 +10,29 @@ static void error(const char* msg, const char* msg1)
     exit(1);
 }
 
-int main()
+#define SCPY(s,arg) { toml_datum_t t = toml_string_in(ptr, #arg); if(t.ok && strlen(t.u.s) < sizeof(conf->## s ## . ## arg)) { strcpy(conf->## s ## . ## arg,t.u.s); } else { printf("string length exception"); } }
+#define ICPY(s,arg) { conf->s##.##arg; }
+#define ACPY(s,arg) { conf->s##.##arg; }
+
+#define TCPY(s,arg) { toml_datum_t t_in = toml_string_in(ptr, arg); \
+    if (!t.ok) { \
+         error("cannot read server.host", ""); \
+    }}	\									   \
+
+config * conf;
+
+int main(int argc, char **argv)
 {
-    FILE* fp;
+	FILE* fp;
+	conf = malloc(sizeof(config));
     char errbuf[200];
 
     // 1. Read and parse toml file
-    fp = fopen("sample.toml", "r");
-    if (!fp) {
-        error("cannot open sample.toml - ", strerror(errno));
+    if(!(fp = fopen("/etc/lqos.conf", "r"))) {
+    	if(!(fp = fopen("lqos.conf", "r"))) {
+        	error("cannot open lqos.conf - ", strerror(errno));
+		}
     }
-
     toml_table_t* conf = toml_parse_file(fp, errbuf, sizeof(errbuf));
     fclose(fp);
 
@@ -58,18 +41,46 @@ int main()
     }
 
     // 2. Traverse to a table.
-    toml_table_t* server = toml_table_in(conf, "server");
-    if (!server) {
-        error("missing [server]", "");
-    }
+    toml_table_t* ptr = NULL;
+
+
+    if (!(ptr = toml_table_in(ptr, "main")))
+        error("missing [main]", "");
+
+    if (!(ptr = toml_table_in(ptr, "perms")))
+        error("missing [perms]", "");
+
+	SPUL(perms);
+	ICPYD(s,max_users,32);
+	ICPYD(s,umask,0770);
+	SCPYD(s,group,"lqos");
+	SPUL(bridge);
+	SPUL(lqos);
+	SPUL(tuning);
+	SPUL(stats)
+	SPUL(influx);
+	BCPYD(s,enable,false);
+
+    if (!(ptr = toml_table_in(ptr, "bridge")))
+        error("missing [bridge]", "");
+
+    if (!(ptr = toml_table_in(ptr, "lqos")))
+        error("missing [lqos]", "");
+
+    if (!(ptr = toml_table_in(ptr, "tuning")))
+        error("missing [tuning]", "");
+
+    if (!(ptr = toml_table_in(ptr, "influx")))
+        error("missing [influx]", "");
+
 
     // 3. Extract values
-    toml_datum_t host = toml_string_in(server, "host");
+    toml_datum_t host = toml_string_in(ptr, "host");
     if (!host.ok) {
         error("cannot read server.host", "");
     }
 
-    toml_array_t* portarray = toml_array_in(server, "port");
+    toml_array_t* portarray = toml_array_in(ptr, "port");
     if (!portarray) {
         error("cannot read server.port", "");
     }
@@ -89,10 +100,6 @@ int main()
     return 0;
 }
 
-parse_config() {
-    FILE *fp = fopen("test.toml");
-    mqoe_config = toml_parse_file(FILE *fp, char *errbuf, int errbufsz);
-}
-    parse_config() {
-    int fd = open(filepath, O_RDONLY);
+bool parse_config() {
+	return false;
 }
