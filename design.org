@@ -1,0 +1,30 @@
+#+title: Design
+* Some design thoughts
+
+Presently polling all the queues at ever increasing sample rates has
+a tendency to return a lot of data that has not changed.
+
+Instead, possibly, we could just log
+timestamp, hash, some_other_data, on every packet.
+
+Tossing that into a ringbuffer, at 10Gbit, even with the smallest packets
+is only 10000 entries per ms. Trivial, particularly because that could be per cpu.
+
+This still leaves the existing netlink problem of trying to get
+the full queue states back for further processing, where we cannot match on the x:y of the queue, but have to dump the whole thing. Still have to fix that!
+
+However in the container case, is the container we are in visible?
+that means we just trigger the poller on the qdiscs that have changed.
+* Unified timebase remains desirable
+
+Keeping track of everything in ns is kind of hard. TCP timestamps are at a ms resolution. Using floats has a precision of 2⁻23 which makes me a little nervous regarding ms vs ns. Have to think about it.
+
+* prog action verb
+
+I started off using getopt out of habit, but more modern programs like systemd and git dont work that way.
+
+* math
+
+I like using saturating math, in general. This requires work to coax from C, and less work from rust.
+
+*
