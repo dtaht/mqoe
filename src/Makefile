@@ -9,7 +9,7 @@ LIBS=-I/usr/local/include -lcgic
 DEBUG=-DDEBUG 
 #DEBUG=-DDEBUG -DDUMMY_SERVER -DDUMMY_CLIENT
 parse=shaped_parse.c
-PROGS=mqoe shaped_parse sizes
+PROGS=mqoe shaped_parse sizes cake
 HTMLDIR=/var/www/mqoe
 CGIDIR=/usr/lib/cgi-bin
 BINDIR=$(HOME)/bin
@@ -25,6 +25,9 @@ mqoe: $(OBJS) $(VERSION)
 
 sizes: include/mqoe.h include/config.h sizes.c
 	$(CC) $(CFLAGS) $(LDFLAGS) sizes.c -o sizes
+
+cake: include/mqoe.h include/config.h include/cake.h cake.c
+	$(CC) $(CFLAGS) $(LDFLAGS) cake.c -o cake 
 
 shaped_parse:
 	$(CC) $(CFLAGS) $(parse) -lcsv -o parse

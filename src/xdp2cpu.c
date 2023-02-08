@@ -40,13 +40,13 @@ void xdp2cpu_usage (char *err) {
 
 #define GETOPT ("")
 
-int main_xdp2cpu(int argc, char*argv) {
+int main_xdp2cpu(int argc, char **argv) {
 		xdp2cpu_usage("have to write this");
 		return 0;
 }
 
 #ifndef BUSYBOX
-int main(int argc, char *argv) {
+int main(int argc, char **argv) {
 		return main_xdp2cpu(argc,argv);
 }
 #endif

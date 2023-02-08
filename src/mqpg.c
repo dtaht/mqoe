@@ -25,13 +25,13 @@ void mqpg_usage (char *err) {
 
 #define GETOPT ("")
 
-int main_mqpg(int argc, char*argv) {
+int main_mqpg(int argc, char **argv) {
 		mqpg_usage("have to write this");
 		return 0;
 }
 
 #ifndef BUSYBOX
-int main(int argc, char *argv) {
+int main(int argc, char **argv) {
 		return main_mqval(argc,argv);
 }
 #endif

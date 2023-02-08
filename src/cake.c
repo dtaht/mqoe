@@ -1,5 +1,6 @@
 #include "include/mqoe.h"
 #include <linux/pkt_sched.h>
+#include "include/cake.h"
 
 /* FIXME: Find NLA_U64 definitions
  *
@@ -204,21 +205,12 @@ nla_put_failure:
 */
 
 // This is specific to cake diffserv4 because, why not?
-// We use saturating math anyway
-
-typedef struct {
-		u64 sent_bytes[4];
-		u64 sent_packets[4]; // 32 but we need to roll over
-		u64 dropped_packets[4]; // FIXME it is annoying that acks_dropped counts here
-		u64 ecn_marked_packets[4];
-		u64 acks_dropped_packets[4];
-		u32 backlog_bytes[4];
-// we will care about base (in to out for sparse), peak(sampled), and way_collisions (problem)
-// we will also care about sparse/bulk/unresponsive
-} cake_stats;
+// We use saturating math anyway throughout.
+// My intent here is to make sure we use saturating math
+// And to fiddle with various analytical math methods along the way
 
 #ifndef BUSYBOX
-int main(int argc, char *argv) {
+int main(int argc, char **argv) {
 		cake_stats *p = calloc(sizeof(cake_stats),10000);
 		for(int i = 0; i < 10000; i++) {
 				p[i].sent_bytes[0] = random();

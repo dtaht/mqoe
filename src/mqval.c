@@ -23,13 +23,13 @@ void mqval_usage (char *err) {
 	exit(-1);
 }
 
-int main_mqval(int argc, char*argv) {
+int main_mqval(int argc, char **argv) {
 		mqval_usage("have to write this");
 		return 0;
 }
 
 #ifndef BUSYBOX
-int main(int argc, char *argv) {
+int main(int argc, char **argv) {
 		return main_mqval(argc,argv);
 }
 #endif
