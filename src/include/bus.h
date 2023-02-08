@@ -30,6 +30,7 @@ enum cmds {
 		Alert, // send an alert or alert on some parameter
 		BOOTTIME,
 		CURTIME,
+		PSINFO, // I care a heck of a lot more about context switch irq service than load
 		CSINFO, // I care a heck of a lot more about context switch irq service than load
 		CPUINFO, // I care a heck of a lot more about context switch irq service than load
 		THREADINFO,
@@ -46,6 +47,8 @@ enum cmds {
 		QueueXStats,
 		ClassStats, // cake has 4096 classes also
 		TraceRoute,
+		CRASH,
+		BENCH,
 		MTR,
 		TCPDUMP, 
 		NTEST, // run some sort of test

@@ -18,10 +18,6 @@
 #include <arpa/inet.h>
 #include "version.h"
 
-const char *LOCK_PATH = "/run/mqoe/lqosd.lock";
-const char *LOCK_DIR = "/run/mqoe";
-const char *LOCK_DIR_PERMS = "/run/mqoe";
-
 #define CLOCKID CLOCK_REALTIME
 #define errExit(msg, data)         do     {      printf(msg,data); \
         exit(EXIT_FAILURE);                             \

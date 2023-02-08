@@ -16,6 +16,19 @@ int shellTC(char *command) {
 		do();
 }
 
+/*
+tc class add dev ens16f1np1 parent 0x2:0x3 classid 0xa2 htb rate 38Mbit ceil 38Mbit
+tc qdisc add dev ens16f1np1 parent 0x2:0xa2 fq_codel
+tc class add dev ens16f0np0 parent 0x2:0x3 classid 0xa2 htb rate 11Mbit ceil 11Mbit
+tc qdisc add dev ens16f0np0 parent 0x2:0xa2 fq_codel
+I gave up. It is just easier to think about this in binary.
+*/
+
+int tc_htb_add(char *buf, u32 parent, u32 classid, u32 rate, u32 ceil) {
+	return sprintf(buf,"tc class add dev %s classid %x:%x htb rate %ukbit ceil");
+}
+
+
 bool first_run_since_boot() {
 }
 

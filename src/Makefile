@@ -49,7 +49,7 @@ etags:
 	find . -type f \( -name \*.c -o -name \*.h \) | xargs etags --append
 
 include/version.h: $(SRCS)
-	./generate-version.sh > include/version.h
+	./generate-version.sh include/version.h
 
 .SUFFIXES: .man .html
 

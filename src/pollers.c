@@ -30,7 +30,7 @@ static void handler(int sig, siginfo_t *si, void *uc) {
     print_siginfo(si);
          signal(sig, SIG_IGN); }
 
-     int main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
          timer_t timerid;
          struct sigevent sev;
          struct itimerspec its;
@@ -39,8 +39,7 @@ static void handler(int sig, siginfo_t *si, void *uc) {
          struct sigaction sa;
 
          if (argc != 3) {
-             fprintf(stderr,     "Usage:      %s     <sleep-secs>
-     <freq-nanosecs>\n",
+             fprintf(stderr,     "Usage:      %s     <sleep-secs> <freq-nanosecs>\n",
                      argv[0]);
              exit(EXIT_FAILURE);
          }

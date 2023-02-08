@@ -1,9 +1,8 @@
 #include "include/mqoe.h"
 #include <linux/pkt_sched.h>
+#include <linux/netlink.h>
 #include "include/cake.h"
 
-/* FIXME: Find NLA_U64 definitions
- *
 static const struct nla_policy cake_policy[TCA_CAKE_MAX + 1] = {
 	[TCA_CAKE_BASE_RATE64]   = { .type = NLA_U64 },
 	[TCA_CAKE_DIFFSERV_MODE] = { .type = NLA_U32 },
@@ -23,8 +22,6 @@ static const struct nla_policy cake_policy[TCA_CAKE_MAX + 1] = {
 	[TCA_CAKE_SPLIT_GSO]	 = { .type = NLA_U32 },
 	[TCA_CAKE_FWMARK]	 = { .type = NLA_U32 },
 };
-
-*/
 
 /*
 static int cake_dump_stats(struct Qdisc *sch, struct gnet_dump *d)

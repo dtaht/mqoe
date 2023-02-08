@@ -1,1 +1,0 @@
-pub const SUPPORTED_CUSTOMERS: usize = 16_000_000;
