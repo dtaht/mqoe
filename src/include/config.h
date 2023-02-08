@@ -1,5 +1,7 @@
 #pragma once
 
+#define MAX_TRIE 16 // Arbitrary number of tries
+
 typedef u64 ns;
 
 typedef struct {
@@ -22,13 +24,24 @@ typedef struct {
 
 typedef struct {
 	ns queue_check_period; // ns, not us
-} mq_stats;
+} mqstats;
 
-enum offloads { stop_irq_balance, disable_rxvlan, disable_txvlan = BIT(1), gso, tso, gro, sg, lro };
+// Probably a bad idea but I have to go look up how ethtool does it
+
+typedef struct {
+		u32 stop_irq_balance:1;
+		u32 disable_rxvlan:1;
+		u32 disable_txvlan:1;
+		u32 gso:1;
+		u32 tso:1;
+		u32 gro:1;
+		u32 sg:1;
+		u32 lro:1;
+} offloads;
 
 typedef struct {
 	char *name;
-	redirect_to *name;
+	char *redirect_to;
 	bool scan_vlans;
 } interface_map;
 
@@ -44,16 +57,16 @@ typedef struct {
 typedef struct {
 	bool use_xdp_bridge;
 	bool scan_vlans;
-	char in[IFACE_LEN];
-	char out[IFACE_LEN];
+	char in[IFNAMSIZ];
+	char out[IFNAMSIZ];
 	u16 tag_in;
 	u16 tag_out;
 } bridge;
 
 typedef struct {
 	bool influxDBEnabled;
-	char influxDBurl[1024]
-	char influxDBBucketi[255];
+	char influxDBurl[1024];
+	char influxDBBucket[255];
 	char influxDBOrg[255]; // "Your ISP Name Here"
 	char influxDBtoken[255];
 } influxdb;
@@ -71,12 +84,12 @@ typedef struct {
 	u32 generatedPNup;
 	u32 upstreamBandwidthCapacityDownloadMbps;
 	u32 upstreamBandwidthCapacityUploadMbps;
-	ipv4_trie *ignore4Subnets[]; // tempted to make this static
-	ipv6_trie *ignore6Subnets[];
-	ipv4_trie *allowed4Subnets[];
-	ipv6_trie *allowed6Subnets[];
-	ipv4_trie *my4Subnets[];
-	ipv6_trie *my6Subnets[];
+	trie_ipv4 ignore4Subnets[MAX_TRIE];
+	trie_ipv6 ignore6Subnets[MAX_TRIE];
+	trie_ipv4 allowed4Subnets[MAX_TRIE];
+	trie_ipv6 allowed6Subnets[MAX_TRIE];
+	trie_ipv4 my4Subnets[MAX_TRIE];
+	trie_ipv6 my6Subnets[MAX_TRIE];
 //	myTunnels = ['192.168.0.0/16'] # Say we use a subset of 10/8 or ...
 	u16 queuesAvailableOverride;
 } ispconfig;
@@ -90,7 +103,7 @@ typedef struct {
 
 extern config *conf;
 
-struct stuff {
+typedef struct {
 	char *sqm;
 	char *lqos_bus;
 	char *user;
@@ -99,6 +112,4 @@ struct stuff {
 	u16 umask;
 	char *lqos_directory;
 	u16 lqos_port;
-};
-
-
+} stuff;

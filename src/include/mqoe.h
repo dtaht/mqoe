@@ -12,14 +12,15 @@
 #include <signal.h>
 #include <time.h>
 #include <getopt.h>
+#include <linux/if.h>
 #include <linux/tcp_metrics.h>
 #include <linux/types.h>
 #include <arpa/inet.h>
 #include "version.h"
 
-const char *LOCK_PATH = "/run/lqos/lqosd.lock";
-const char *LOCK_DIR = "/run/lqos";
-const char *LOCK_DIR_PERMS = "/run/lqos";
+const char *LOCK_PATH = "/run/mqoe/lqosd.lock";
+const char *LOCK_DIR = "/run/mqoe";
+const char *LOCK_DIR_PERMS = "/run/mqoe";
 
 #define CLOCKID CLOCK_REALTIME
 #define errExit(msg, data)         do     {      printf(msg,data); \
@@ -36,6 +37,7 @@ const char *LOCK_DIR_PERMS = "/run/lqos";
 // FIXME linux defines these somewhere
 
 typedef __u8 u8;
+typedef __u16 u16;
 typedef __u32 u32;
 typedef __u64 u64;
 typedef __uint128_t u128;
