@@ -46,3 +46,6 @@
 [submodule "libubox"]
 	path = libubox
 	url = git://git.openwrt.org/project/libubox.git
+[submodule "uci"]
+	path = uci
+	url = https://git.openwrt.org/project/uci.git
