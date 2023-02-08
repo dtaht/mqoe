@@ -1,41 +1,41 @@
 * MQOE - A not even compiling emulator for high speed packet analysis, and SQM for ISPs
 
-This started life as an attempt to write a simulation to exercise the [[https://github.com/LibreQoE/LibreQoS#support-libreqos][LibreQos codebase]]. It then started to grow and grow, as I rewrote code from the python and rust to C, and began to understand it better in my own aging idioms.
+This started life as an attempt to [[https://github.com/LibreQoE/LibreQoS/tree/main/sim#readme][write a simulation]](sim) to exercise the [[https://github.com/LibreQoE/LibreQoS#support-libreqos][LibreQos codebase]]. It then started to grow and grow, as I rewrote code from the python and rust to C, and began to understand those codebases better in my own aging idioms. All I had wanted to do, when I started, was write the emulation of a suitably diverse 40k subscriber plans into the LibreQos ShapedDevices.csv file!
 
-This code does not work. It may never work. Right now I am off on another task - trying to speed up netlink to handle sampling
-40 million live queues (in the Linux kernel) at about 1ms intervals, which might take me a while!
+This code does not work. It may never work. Right now I am off on another task - trying to speed up netlink or some tracing tool to handle sampling 40 million live queues (in the Linux kernel) at about 1ms intervals, which might take me a while.
 
 For some of my lonely rantings about proper network measurements at better than a 1ms sample rate please see this [[https://blog.cerowrt.org/post/flaws_in_flent/][recent rant about flent]] on all the fun you can have when trying to see network events at below the usec line.  Please DM me on the matrix (@dtaht:matrix.org) if you have any suggestiond?
 
 ** Why MQOE?
 
-As I looked at the python and rust explosions of error checking over the Linux OS API, my insanely close to the kernel needs, and the ISP focus for the product, verses what I wanted in an emulator and test tool, I decided that perhaps it would be best to outline my ideas in my native tongue, C. Writing eBPF in C is pretty hard, but writing it not in C is harder.
+As I looked at the python and rust explosions of error checking over the Linux OS API, my insanely close to the kernel needs, and the ISP focus for the product, verses what I wanted in an emulator and test tool, where I would like to capture an event and run backwards in time with it a zillion different ways. I decided that perhaps it would be best to outline my ideas in my native tongue, C. Writing eBPF in C is pretty hard, but writing it not in C is harder.
 
-It helps that there are things that are congruent with libreqos´s main goals, (like adopting netlink), and lets me deal with my frustration in not being able to express myself in either python or rust very well.  Getting frustrated in C provides balance.
+It helps that there are things that are congruent with LibreQoS's main goals, (like adopting netlink), and lets me deal with my frustration in not being able to express myself in either python or rust very well.  Getting frustrated in C provides balance.
 
 *** HARD problem: Driving 40k simultaneous ISP user emulations from the client
 
-Attempting to setup 40k vms all at once to emulate a big network did not, um, scale. (try firing up even 10k IGP routing daemons in containers, too! It's fun! [[Try rtod!][https://github.com/dtaht/rtod#rtod-routing-tables-of-death]] Make popcorn!), and I realized that after that disaster... that driving accurate tests (like voip, netflix, web, etc) tests from a randomly (but accurately) chosen subset(s) of clients to a limited number of virtualized servers and server was what we wanted to do in the future.
+Attempting to setup 40k vms all at once to emulate a big ISP network did not, um, scale. (try firing up 10k IGP routing daemons in containers, too! It's fun! [https://github.com/dtaht/rtod#rtod-routing-tables-of-death][Try RTOD]]! Roast marshmellows over the resulting CPU fire! Everyone using routing daemons, expecting them to scale linearly with gobs of bandwidth available - should do this at least once), and I realized that after that disaster... that driving accurate tests (like voip, netflix, web, etc) tests from a randomly (but accurately) chosen subset(s) of clients to a limited number of virtualized servers was what we wanted to do in the future.
 
-We could then place various servers at various netem distances at the client, and fire off tests in each client based on the statistics we get back from real traffic today, from the real ISPs using libreqos. To do that I needed network namespaces, and the same comprehensive picture of what the network looked like that was already in libreqos. Except that was expressed in two languages I am not very good at. So rewriting that is helping me understand those things better.
+We could then place various servers at various netem distances at the client, and fire off tests in each client based on the statistics we get back from real traffic today, from the real ISPs using libreqos 1.3 that have volunteered to provide some. To do that I needed network namespaces, and the same comprehensive picture of what the network looked like that was already in libreqos. Except that the complexities of those network structures were expressed in two languages I am not very good at, connected together by json which lost the strong typing needed in the Linux kernel. Json and toml all promote types to 64bit equivalents, where you sling around shorts, u8s, and bits a a lot if you want to wedge things back into the kernel. So rewriting that, at least partially, is helping me understand those things better.
 
-Also emulating the existing (or lack of!) SQM/AQM/FQ ISP infrastructure as we already do on [[https://payne.taht.net][our testbed, payne]], was good to do many, many times, locally, for a sim. I had already found 3 nice new optimizations for sch_cake with the existing sim we have - what more lies beneath? 
+In emulating the existing (or lack of!) SQM/AQM/FQ at-the-ISP infrastructure as we already do on [[https://payne.taht.net][our public testbed, payne]], it seems good to make that repeatable and replicable, for a sim, or for a researcher, or to onboard a new developer. I had already found 3 nice new optimizations for sch_cake with the existing sim we have - and one for BBR! what more lies beneath? We have a guy working on improving PicoQuic´s Quic multipath implementation, already.
 
 *** Rust really hurts me to think in (presently)
 
-I have only been at rust 1 month, after 40 years of programming in 40 or so other languages. Rust used to make me nuts hourly, now it is just daily. My productivity is still in the toilet. I have written, oh, 12 lines of fresh rust code (but regularly and easily [[https://github.com/LibreQoE/LibreQoS/issues/229][borked the rust codebase]]) since the project's start, by being a BOFH. (that has got a lot better now!) 
+I have only been at rust 1 month, after 40 years of programming in 40 or so other languages. Rust used to make me nuts hourly, now it is just daily. My productivity is still in the toilet. I have written, oh, 12 lines of fresh rust code (but regularly and easily I have[[https://github.com/LibreQoE/LibreQoS/issues/229][bork the rust codebase]]) since the project's start, by being part of the red team finding new ways to break that. LibreQos v1.4 is now approaching a point to where it could hit alpha status by the end of the month - unless we find someone else with the ability to break things as hard as I and our enthusiastic team of alpha testers.
 
 Things in rust that have made me crazy so far:
 
 - WAY().too().much().typing().that.is.difficult.to.unpack().to_string().a.set.of.thoughts.together()?
-- No doubly linked lists? no uthash.h? uthash.h and inline qsort are all I need in C...
+- No doubly linked lists? no uthash.h? uthash.h and inline qsort are all I need in C... I am tempted to write an ode to why uthash was so great in the 90s for simple record at a time work in C...
 - Creating a lookup table required programming the AST!?
+  Slinging Strings around is silly. 
 - FIXED: Creating fdtimers not correctly supported by tokio
-- Pulling from postgres 
-- Wanting console I/O (pretty nifty console I/O in rust nowdays)
-- I wanted to use the tc_flower classifier and other htb offloads if at all possible
+- POSTPONED: Pulling from postgres (slated for v1.5) - Long term looking at data using the same filter schemes and algorithms is needed.
+- COOL: Wanting console I/O (There pretty nifty console I/O in rust nowdays - but nobody has a curses forms equivalent. Curses!)
+- I wanted to use the tc_flower classifier and other htb offloads if at all possible. 
 
-But: If you want HARD to think in, oh C or Rust programmer? Trying writing anything that makes sense to yourself in [[https://liburcu.org/][Userspace-RCU]]! Kernel RCU is really, really nice, and easy to think in, in comparison to userspace RCU, and that was my first choice for this project! 
+But: If you want HARD to think in, oh C or Rust programmer? Trying writing anything that makes sense to yourself in [[https://liburcu.org/][Userspace-RCU]]! Kernel RCU is really, really nice, and easy to think in, in comparison to userspace RCU. Userspace RCU was my first choice for this project! There is a skiplist in there that looked useful.
 
 I tossed off the 3k+ lines of broken C code here over the course of 3 days. 
 
@@ -45,28 +45,25 @@ Using FFI for rust was being a pain in the ass. In MQOE I can just include all t
 
 **** Rust requires crazy amounts of cognitive overhead
 
-I write 4 letter error checked macros like
+I write 4 letter strlen error checked macros like
 
 SCPY(a,arg) - 
 ICPY(b,arg) - like C was a assembly language. Rust folk sling strings around. Hilariously I 
 don't remember the C preprocessor magic I needed to do that like in the old days. It is around here somewhere.
 
 You typically have to declare things in 4 different files to do even the simplest thing. I see rust after rust program that
-consists of essentially one line code surrounded by a directory structure, Cargo.toml, etc.
+consists of essentially one line of code surrounded by a directory structure, Cargo.toml, etc.
 
 The whole filesystem as an object store in the modern programming environments concept I still haven't found a way to deal with in
-emacs. I end up with 8 copies of main.rs<1> from different places. I need some different concept of "buffer" to flip things around that emacs probably has. 
+emacs. I end up with 8 copies of main.rs<1,2,3,4,5,6,7,8> from different places, and want to hit the first letter of the actual file to get there. I need some different concept of "buffer" to flip things around (that emacs probably has) or to think more in terms of function calls than files.
 
-For me a file indicates at least some of its purpose. e.g. balance.c. This is not rusts fault, but I still fail to understand how files morphed from names for things to names for verbs. I have been out of it for a while. Who changed this? When did this happen? Who is responsible? Can they be shot? Is it too late for filesystems?
+For me a file indicates at least some of its purpose. e.g. balance.c. This is not rusts fault, but I still fail to understand how files morphed from names for things to filesystem structures as names for actions to take. I have been out of it for a while. Who changed this? When did this happen? Who is responsible? Can they be shot? Is it too late for filesystems?
 
 **** network namespaces are the way forward towards programming a dataplane
 
-Rust had all these really great abstractions, but ... that lookup table, doubly
-linked lists, etc, etc were things that I normally reached for. I live and die by rbtrees. The many
-uses of memfd and the new clone3 system call for containers has great appeal. I do not care for threads much in the first place,
-preferring iron jails for subprocesses with limited permissions.
+Rust had all these really great abstractions, but ... that lookup table, doubly linked lists, etc, etc were things that I normally reached for. I live and die by rbtrees. The many uses of memfd and the new clone3 system call for containers has great appeal. I do not care for threads much in the first place, preferring iron jails for subprocesses with limited permissions. Userspace RCU thoroughly frightened me, I can put subprocesses in jails and let them just crash themselves...
 
-LibreQos presently uses a nifty xdp + htb-based tree but not network namespaces, and to simulate the varying characteristics of the internet with delays, loss, and jitter, the only way I could think of it was to connect up a virtualized multi-hop via containers, model the network as a tree, and add [[https://www.bufferbloat.net/projects/codel/wiki/Best_practices_for_benchmarking_Codel_and_FQ_Codel/][netem very carefully]] all over the place to it.
+LibreQos presently uses a nifty XDP + htb-based tree but not network namespaces, and to simulate the varying characteristics of the internet with delays, loss, and jitter, the only way I could think of it was to connect up a virtualized multi-hop network via containers, model the network as a tree, and add [[https://www.bufferbloat.net/projects/codel/wiki/Best_practices_for_benchmarking_Codel_and_FQ_Codel/][netem very carefully]] all over the place to it.
 
 *** Wow, C in userspace is fun again
 
@@ -74,18 +71,20 @@ In adopting the C17 standard and playing with modern compilers...  It turned out
 
 **** clang-lsp
 
-I finally gave up on years of a lagging emacs implementation and installed doom emacs. Doom is REALLY NICE.
+I finally gave up on years of a lagging emacs 24 implementation that I dare not change... and installed doom emacs. Doom is REALLY NICE. It also is driving me batty with certain defaults that I am not used to.
 
 It also turned out that the Clang-LSP interface so needed for most modern languages had also come a long way with C!
 
 It was quite pleasant to code with it once I got it to timeout at about the right interval and give me a popup, and I am going to tre to add an clang-LSP interface to my C kernel programming activitities now, instead of my aging default of emacs + semantic. Win. That said, I kind of expect it to choke on the kernel, and try to inflict its choices for formatting my code on me... and I am very happy to NOT be working in the kernel right now.
 
-A BOFH plus! I can write 3k lines of totally borken C code and have LSP complain mightly at me and just ignore it's insistent advice. Pesky machine. What do you know about the heat of programming?
+Also since all the cool kids now just pull things from github, I too just pulled the C libs I needed via git submodules, and boom! LSP picked those APIs up for me.
+
+A BOFH plus! I can write 3k lines of totally borken C code and have LSP complain mightly at me on every line.. and just ignore it's insistent advice. Pesky machine. What do you know about the heat of programming? Who is your master?
 
 **** Network Namespaces in particular
 
 Remain tricky! I almost have my head around clone3 and the usefulness of it all. I had no idea there were so many PIDs inside
-a modern machine, hiding...
+a modern machine, hiding... It has been kind of terrifying, actually, learning that I have no idea what is actually running within my computer, that top and ps dont show everything anymore. How many worms and viruses are now hiding behind containers?
 
 **** C Downsides
 
@@ -95,14 +94,15 @@ a modern machine, hiding...
 - ZeroCopy is hard to express in general
 - Atomic ops require care
 - Few (including me) are good at C anymore
-- Why not Zig? Zig is tempting, no FFI needed... (Try ziiiig)
+- Why not Zig? Zig is tempting, no FFI needed... (My subconcious keeps saying  "Try ziiiig"...)
 
 Go is a no-go for this project. Not fast enough, too much garbage collection. I think. Prove me wrong? Rewrite libreqos in Go and prove me wrong?
 
 * Plan going forward
 
 VE HAVE NO STINKING PLANTHS. For an actually working and much more mature codebase,
-[[https://github.com/LibreQoE/LibreQoS#support-libreqos][please see LibeQos]]
+[[https://github.com/LibreQoE/LibreQoS#support-libreqos][please see LibeQos]], and either try the v1.3 stable release, or if you feel very very very daring, and are willing to leap into rust, pull head. We really need to make it easier to install, especially
+in just plain old monitoring mode.
 
 As I write this I had only burned two weeks(4 days) on the project. I had started with:
 
