@@ -1,5 +1,7 @@
 parse
 mqoe
+sizes
+cake
 *.o
 a.out
 
