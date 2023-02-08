@@ -1,9 +1,9 @@
 #include "include/mqoe.h"
 #include "include/config.h"
 
-#define PS(val) { printf("sizeof " # val " = %d\n", sizeof(val)); }
+#define PS(val) { printf("sizeof " # val " = %lu\n", sizeof(val)); }
 
-int main(int argc, char *argv) {
+int main(int argc, char **argv) {
 	PS(trie_ipv6);
 	PS(trie_ipv4);
 	PS(perms);

@@ -9,7 +9,7 @@ LIBS=-I/usr/local/include -lcgic
 DEBUG=-DDEBUG 
 #DEBUG=-DDEBUG -DDUMMY_SERVER -DDUMMY_CLIENT
 parse=shaped_parse.c
-PROGS=mqoe shaped_parse
+PROGS=mqoe shaped_parse sizes
 HTMLDIR=/var/www/mqoe
 CGIDIR=/usr/lib/cgi-bin
 BINDIR=$(HOME)/bin
@@ -22,6 +22,9 @@ OBJS = mqoe.o netlink.o util2.o config_parse.o klingon.o
 
 mqoe: $(OBJS) $(VERSION)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o mqoe $(OBJS) $(LDLIBS)
+
+sizes: include/mqoe.h include/config.h sizes.c
+	$(CC) $(CFLAGS) $(LDFLAGS) sizes.c -o sizes
 
 shaped_parse:
 	$(CC) $(CFLAGS) $(parse) -lcsv -o parse
