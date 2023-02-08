@@ -7,6 +7,28 @@ typedef struct {
 	u64 baseup;
 } plan;
 
+typedef struct {
+	char *node;
+	u64 delay;
+	u64 mindown;
+	u64 minup;
+} linklayer;
+
+// Characteristics of link layers
+
+const linklayer *linklayers {
+	{ "dsl-interleaved", 20, 1 },
+	{ "dsl", 10, 1 },
+	{ "docsis", 20, 1 },
+	{ "docsis-ll", 20, 1 },
+	{ "fiber", 20, 1 },
+	{ "g76s", 20, 1 },
+	{ "wifi", 20, 1 },
+	{ "fwa", 20, 1 },
+}
+
+// Plan setups
+
 const plan *plans[] = {
 	{ "1x384", 10, 3, 10, 3 },
 	{ "4x384", 10, 3, 10, 3 },
@@ -38,15 +60,15 @@ const plan *plans[] = {
 	{ "", 10, 3, 10, 3 },
 };
 
-ips = {
+//ips = {
+//
+//};
 
-};
+//devices = {
+//
+//};
 
-devices = {
-
-};
-
-delays =  { 
-
-};
+//delays =  { 
+//
+//};
 
