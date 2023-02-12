@@ -5,6 +5,21 @@
 #include <linux/rtnetlink.h>
 #include <sys/socket.h>
 
+/* https://lore.kernel.org/netdev/7ec693c6a2b217ab2ff6235ba94ccf43c6bfa8a8.1560561432.git.sbrivio@redhat.com/
+
+It is being dumb and doing a dump, rather than a NLM_F_MATCH
+
+sendmsg(3, {msg_name={sa_family=AF_NETLINK, nl_pid=0, nl_groups=00000000}, msg_namelen=12, msg_iov=[{iov_base=[{nlmsg_len=36, nlmsg_type=RTM_GETQDISC, nlmsg_flags=NLM_F_REQUEST|NLM_F_DUMP, nlmsg_seq=1676162178, nlmsg_pid=0}, {tcm_family=AF_UNSPEC, tcm_ifindex=if_nametoindex("enp1s0f1"), tcm_handle=0, tcm_parent=0, tcm_info=0}], iov_len=36}], msg_iovlen=1, msg_controllen=0, msg_flags=0}, 0) = 36
+
+Also:
+
+Lets us swap fileds
+
+92234c8f15c8 ("xdp: Support specifying expected existing program when attaching XDP")
+1/25/2023, 8:26:13 AM - Toke Høiland-Jørgensen: 92234c8f15c8d96ad7e52afdc5994cba6be68eb9
+
+*/
+
 /*
        RTM_NEWQDISC, RTM_DELQDISC, RTM_GETQDISC
               Add, remove, or get a queueing discipline.  The message
