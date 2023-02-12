@@ -26,9 +26,9 @@ I have only been at rust 1 month, after 40 years of programming in 40 or so othe
 
 Things in rust that have made me crazy so far:
 
-- The ? operator and the abuse of such, with all error checking or recovering punted to the app developer.
-  I would like, at the very least, everyone in the rust world, to do a man errno - and memorize all those errnos, recover properly, and implement exponential backoff, for all OS system calls, like EAGAIN, ENOBUFS, EWOULDBLOCK, etc. In fact, rust world should run strace on everything the are producing and read the man pages thoroughly for those system calls. That would be a safer world.
-- Having to run strace in order to figure anything that the rust program is doing with the OS. Watching it spin in futex, for example, for no good reason.
+- The ? - eat-all-errors - operator and the abuse of such, with all error checking or recovering punted to the app developer.
+  I would like, [[https://github.com/LibreQoE/LibreQoS/issues/209][*everyone* in the rust world]], to do a "man errno" - and memorize all those errnos, recover properly, and implement exponential backoff, for all OS system calls, like EAGAIN, ENOBUFS, EWOULDBLOCK, etc. In fact, rust world should run strace on everything the are producing and read the man pages thoroughly for those system calls. I would feel tons safer. All errors are not errors, and the real world, is full of surprises.
+- Having to run strace in order to figure anything that the rust program is doing with the OS. Watching it spin in futex, for example, for no good reason. The answer is not to move to atomic transactions in this case, but figure out why it is spinning...
 - Five little words that terrify me: "Let's rewrite that in rust!
 - Five little words that terrify me more: "I'll just wrap that in rust!". It's kind of like how jwz described the regex use case: "Now you have two problems."
 - WAY().too().much().typing().that.is.difficult.to.unpack().to_string().a.set.of.thoughts.together() followed by that ?.
