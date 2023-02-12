@@ -1,5 +1,6 @@
 #include "include/mqoe.h"
 #include "include/config.h"
+#include <string.h>
 #include "tomlc99/toml.h"
 
 struct toml_table_t *mqoe_config;
@@ -10,46 +11,27 @@ static void error(const char* msg, const char* msg1)
     exit(1);
 }
 
-// Hah. Fell apart on writing this macro last night
+// Hah. Fell apart on writing this macro last night need to check for overrun
 
-#define SCPY(s,arg) { toml_datum_t t = toml_string_in(ptr, #arg); if(t.ok && strlen(t.u.s) < sizeof(conf->## s ## . ## arg)) { strcpy(conf->## s ## . ## arg,t.u.s); } else { printf("string length exception"); } }
+#define SPUL(arg) { if (!(ptr = toml_table_in(ptr, #arg))) error("missing table section [" #arg "]",""); }
+#define SCPY(arg) { toml_datum_t t = toml_string_in(ptr, #arg); \
+		        if(t.ok && strlen(t.u.s) < sizeof(conf->s ## . ## arg)) \
+			 { strncpy(ptr, t.u.s, sizeof(conf->s ## . ## arg)); free(t.u.s); \
+		         } else { printf("string length exception"); } } 
+
 #define ICPY(s,arg) { conf->s##.##arg; }
 #define ACPY(s,arg) { conf->s##.##arg; }
-
 #define TCPY(s,arg) { toml_datum_t t_in = toml_string_in(ptr, arg); \
-    if (!t.ok) { \
-         error("cannot read server.host", ""); \
-    }}	\									   \
+    		      if (!t.ok) { error("cannot read server.host", ""); \
+		    }}						   \
 
 config * conf;
 
-/*
-  if (!(ptr = toml_table_in(ptr, "main")))
-        error("missing [main]", "");
-
-    if (!(ptr = toml_table_in(ptr, "perms")))
-        error("missing [perms]", "");
-
-    if (!(ptr = toml_table_in(ptr, "bridge")))
-        error("missing [bridge]", "");
-
-    if (!(ptr = toml_table_in(ptr, "lqos")))
-        error("missing [lqos]", "");
-
-    if (!(ptr = toml_table_in(ptr, "tuning")))
-        error("missing [tuning]", "");
-
-    if (!(ptr = toml_table_in(ptr, "influx")))
-        error("missing [influx]", "");
-
-*/
-
-
 int main(int argc, char **argv)
 {
-	FILE* fp;
-	conf = malloc(sizeof(config));
-    char errbuf[200];
+FILE* fp;
+conf = malloc(sizeof(config));
+char errbuf[200];
 
     // 1. Read and parse toml file
     if(!(fp = fopen("/etc/lqos.conf", "r"))) {
@@ -65,19 +47,18 @@ int main(int argc, char **argv)
     }
 
     // 2. Traverse to a table.
-    toml_table_t* ptr = NULL;
-
+    	toml_table_t* ptr = NULL;
 	SPUL(main);
   	SPUL(perms);
-	ICPYD(s,max_users,32);
-	ICPYD(s,umask,0770);
-	SCPYD(s,group,"lqos");
+//	ICPYD(s,max_users,32);
+//	ICPYD(s,umask,0770);
+//	SCPYD(s,group,"lqos");
 	SPUL(bridge);
 	SPUL(lqos);
 	SPUL(tuning);
 	SPUL(stats)
 	SPUL(influx);
-	BCPYD(s,enable,false);
+//	BCPYD(s,enable,false);
 
     // 3. Extract values
     toml_datum_t host = toml_string_in(ptr, "host");
