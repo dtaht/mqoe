@@ -31,3 +31,10 @@ I like using saturating math, in general. This requires work to coax from C, and
 - Do less work, more often
 - Bugs accumulate at the interfaces between programers
 - Check all errnos and do the right thing
+
+* Revisit some design decisions
+
+- Prometheus is popular. Influxdb maddengling lacks an invlog scale. 
+- Grafina? https://forum.openwrt.org/t/sqm-reporting/59960/173?page=2
+- Animating via plotly seems slow - try SVG?
+- Speeding things up - websockets? 

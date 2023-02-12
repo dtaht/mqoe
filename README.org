@@ -34,6 +34,7 @@ Things in rust that have made me crazy so far:
 - POSTPONED: Pulling from postgres (slated for v1.5) - Long term looking at data using the same filter schemes and algorithms is needed.
 - COOL: Wanting console I/O (There pretty nifty console I/O in rust nowdays - but nobody has a curses forms equivalent. Curses!)
 - I wanted to use the tc_flower classifier and other htb offloads if at all possible. 
+- No Iconv \_("Translate This") - OK, I get that rust needed more operators, but why not have a new UTF8 I18N operator too?
 
 But: If you want HARD to think in, oh C or Rust programmer? Trying writing anything that makes sense to yourself in [[https://liburcu.org/][Userspace-RCU]]! Kernel RCU is really, really nice, and easy to think in, in comparison to userspace RCU. Userspace RCU was my first choice for this project! There is a skiplist in there that looked useful.
 
